@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
+import { Context } from "../Provider";
 
 class Settings extends Component {
   state = {
@@ -16,15 +17,18 @@ class Settings extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div>
-        <TextField
-          id='standard-dense'
-          label='Zipcode'
-          onChange={this.handleZipcode}
-          className={classNames(classes.textField, classes.dense)}
-          margin='dense'
-        />
-      </div>
+      <Context.Consumer>
+        {context => (
+          <TextField
+            id='standard-dense'
+            label='Zipcode'
+            onChange={context.setZipcode}
+            value={context.state.zipcode}
+            className={classNames(classes.textField, classes.dense)}
+            margin='dense'
+          />
+        )}
+      </Context.Consumer>
     );
   }
 }
