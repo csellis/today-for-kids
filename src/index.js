@@ -1,14 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
 import "./index.css";
 import App from "./App";
 import Provider from "./Provider";
 import * as serviceWorker from "./serviceWorker";
 
+const client = new ApolloClient({
+  uri: "https://api-useast.graphcms.com/v1/cjrjx3c9z0d6h01ggtwvp3czr/master"
+});
+
 ReactDOM.render(
-  <Provider>
-    <App />
-  </Provider>,
+  <ApolloProvider client={client}>
+    <Provider>
+      <App />
+    </Provider>
+  </ApolloProvider>,
   document.getElementById("root")
 );
 

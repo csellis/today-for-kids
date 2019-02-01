@@ -8,15 +8,22 @@ class Provider extends Component {
     super(props);
 
     this.state = {
-      zipcode: ""
+      zipcode: "",
+      weather: {}
     };
   }
 
   componentDidMount() {
     const storeZipcode = store.get("zipcode");
+    const storeWeather = store.get("weather");
     if (storeZipcode) {
       this.setState({
         zipcode: storeZipcode
+      });
+    }
+    if (storeWeather) {
+      this.setState({
+        weather: storeWeather
       });
     }
   }
