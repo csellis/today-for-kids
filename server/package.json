@@ -12,6 +12,7 @@
     "generate-schema": "^2.6.0",
     "mongoose": "^5.4.9",
     "morgan": "^1.9.1",
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.9",
+    "path-parser": "^4.2.0"
   }
 }

@@ -9,8 +9,8 @@
     "concurrently": "^4.1.0"
   },
   "scripts": {
-    "start": "concurrently \"cd server && node server.js\" \"cd client && yarn start\"",
-    "dev": "concurrently \"cd server && nodemon server.js\" \"cd client && yarn start\"",
+    "start": "concurrently \"cd server && node index.js\" \"cd client && yarn start\"",
+    "dev": "concurrently \"cd server && nodemon index.js\" \"cd client && yarn start\"",
     "install": "concurrently \"cd server && yarn install\" \"cd client && yarn install\"",
     "heroku-postbuild": "concurrently \"cd client && yarn install\" \"cd server && yarn install\""
   }

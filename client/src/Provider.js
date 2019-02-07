@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from "axios";
+
 import store from "store";
 
 export const Context = React.createContext();
@@ -15,15 +17,25 @@ class Provider extends Component {
 
   componentDidMount() {
     const storeZipcode = store.get("zipcode");
-    const storeWeather = store.get("weather");
+    const fetchWeather = async () => {
+      try {
+        let weather = await axios.get(`/api/getWeather/${storeZipcode}`);
+
+        if (weather) {
+          this.setState({
+            weather: weather.data.data
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    // console.log(`Zipcode: ${storeZipcode}`);
+    fetchWeather(storeZipcode);
+
     if (storeZipcode) {
       this.setState({
         zipcode: storeZipcode
-      });
-    }
-    if (storeWeather) {
-      this.setState({
-        weather: storeWeather
       });
     }
   }
