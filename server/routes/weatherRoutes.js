@@ -7,7 +7,7 @@ const keys = require("../config/keys");
 
 const Weather = mongoose.model("weathers");
 
-const fetchWeatherFromApi = async location => {
+const fetchWeatherFromOpenWeatherApi = async location => {
   try {
     return await axios.get(
       `http://api.openweathermap.org/data/2.5/forecast?zip=${location},us&APPID=${
@@ -19,35 +19,32 @@ const fetchWeatherFromApi = async location => {
   }
 };
 
+const fetchWeatherFromDarkSky = async (latitude, longitude) => {
+  try {
+    return await axios.get(
+      `https://api.darksky.net/forecast/${
+        keys.darkSky
+      }/${latitude},${longitude}?exclude=minutely,flags`
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 module.exports = app => {
-  app.get("/api/getWeather/:location", async (req, res) => {
-    console.log(`Location: ${req.params.location}`);
-    const { location } = req.params;
+  app.get("/api/getWeather/:latitude/:longitude", async (req, res) => {
+    // console.log(
+    //   `Location: ${req.params.latitude}, ${req.params.longitude}, userId: ${req.params.userId}`
+    // );
+    const { latitude, longitude } = req.params;
 
-    let weather = await Weather.findOne({
-      location
-    });
+    console.log("fetching new data");
+    let weatherFromApi = await fetchWeatherFromDarkSky(latitude, longitude);
 
-    if (weather) {
-      console.log("sending persistence data");
-      res.json({ success: true, data: weather });
-    } else {
-      console.log("fetching new data");
-      // let weatherFromApi = await fetchWeatherFromApi(location);
-
-      // let weather = new Weather({
-      //   location,
-      //   weather: weatherFromApi.data,
-      //   dateCreated: Date.now(),
-      //   dateUpdated: Date.now()
-      // });
-
-      // try {
-      //   await weather.save();
-      //   res.send(weather);
-      // } catch (err) {
-      //   res.status(422).send(err);
-      // }
+    try {
+      res.send(weatherFromApi.data);
+    } catch (err) {
+      res.status(422).send(err);
     }
   });
 };

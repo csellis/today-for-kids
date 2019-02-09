@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-
 import store from "store";
+import { parse, addHours, isBefore } from "date-fns";
 
 export const Context = React.createContext();
 
@@ -10,54 +10,89 @@ class Provider extends Component {
     super(props);
 
     this.state = {
-      zipcode: "",
-      weather: {}
+      weather: {},
+      location: null,
+      getUserWeather: () => this.getUserWeather()
     };
   }
 
   componentDidMount() {
-    const storeZipcode = store.get("zipcode");
-    const fetchWeather = async () => {
-      try {
-        let weather = await axios.get(`/api/getWeather/${storeZipcode}`);
+    // const userId = store.get("userId").userId;
+    // if (userId) {
+    //   this.setState({
+    //     userId
+    //   });
+    // }
+    this.getUserLocation();
+    this.getWeatherFromStore();
+  }
 
-        if (weather) {
+  getWeatherFromStore() {
+    let weatherStore = store.get("weather");
+    if (weatherStore) {
+      this.setState({
+        weather: weatherStore
+      });
+    }
+  }
+
+  getUserLocation() {
+    let latitude, longitude;
+    if (!!navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+        this.setState({
+          location: {
+            latitude,
+            longitude
+          }
+        });
+      });
+    }
+  }
+
+  getUserWeather() {
+    let { latitude, longitude } = this.state.location;
+    let weatherStore = store.get("weather");
+    const fetchWeather = async (latitude, longitude) => {
+      try {
+        let res = await axios.get(`/api/getWeather/${latitude}/${longitude}`);
+
+        if (res) {
+          const weather = res.data;
           this.setState({
-            weather: weather.data.data
+            weather
           });
+          store.set("weather", weather);
         }
       } catch (err) {
         console.error(err);
       }
     };
-    // console.log(`Zipcode: ${storeZipcode}`);
-    fetchWeather(storeZipcode);
 
-    if (storeZipcode) {
-      this.setState({
-        zipcode: storeZipcode
-      });
+    if (!weatherStore) {
+      console.log("No weather store");
+      fetchWeather(latitude, longitude);
+    } else {
+      console.log("There is a weather store");
+      const now = new Date();
+      const fetchedTimePlusOneHour = addHours(weatherStore.currently.time * 1000, 1);
+
+      if (!isBefore(now, fetchedTimePlusOneHour)) {
+        console.log(`but, it's been an hour.`);
+        fetchWeather(latitude, longitude);
+      }
     }
   }
 
-  updateZipcode = zipcode => {
-    const storeZipcode = store.get("zipcode");
-    this.setState({
-      zipcode
-    });
-    if (zipcode !== storeZipcode) {
-      store.set("zipcode", zipcode);
-    }
-  };
-
   render() {
+    this.getUserLocation();
+
     return (
       <Context.Provider
         value={{
-          state: this.state,
-          setZipcode: event => {
-            this.updateZipcode(event.target.value);
-          }
+          state: this.state
         }}
       >
         {this.props.children}
