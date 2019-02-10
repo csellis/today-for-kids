@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import store from "store";
-import { parse, addHours, isBefore } from "date-fns";
+import { addHours, isBefore } from "date-fns";
+import { isNull } from "lodash";
 
 export const Context = React.createContext();
 
@@ -17,13 +18,6 @@ class Provider extends Component {
   }
 
   componentDidMount() {
-    // const userId = store.get("userId").userId;
-    // if (userId) {
-    //   this.setState({
-    //     userId
-    //   });
-    // }
-    this.getUserLocation();
     this.getWeatherFromStore();
   }
 
@@ -49,11 +43,24 @@ class Provider extends Component {
           }
         });
       });
+    } else {
+      console.warn("Geolocation is required for this application. Sorry.");
     }
   }
 
   getUserWeather() {
-    let { latitude, longitude } = this.state.location;
+    let latitude, longitude;
+    if (isNull(this.state.location)) {
+      this.setState({
+        latitude: 35.779558,
+        longitude: -78.638054
+      });
+      latitude = 35.779558;
+      longitude = -78.638054;
+    } else {
+      latitude = this.state.location.latitude;
+      longitude = this.state.location.longitude;
+    }
     let weatherStore = store.get("weather");
     const fetchWeather = async (latitude, longitude) => {
       try {
