@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -20,5 +21,11 @@ class ListItemLink extends React.Component {
     );
   }
 }
+
+ListItemLink.propTypes = {
+  icon: PropTypes.node.isRequired,
+  primary: PropTypes.node.isRequired,
+  to: PropTypes.string.isRequired
+};
 
 export default ListItemLink;

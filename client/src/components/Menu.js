@@ -34,8 +34,8 @@ function Menu(props) {
         onOpen={() => props.setOpen(true)}
       >
         <List className={classes.list}>
-          <ListItemLink icon={<CloudIcon />} to='/' primary={"Weather"} />
-          <ListItemLink icon={<SettingsIcon />} to='/settings' primary={"Settings"} />
+          <ListItemLink to='/' icon={<CloudIcon />} primary={"Weather"} />
+          <ListItemLink to='/settings' icon={<SettingsIcon />} primary={"Settings"} />
         </List>
       </SwipeableDrawer>
     </div>
