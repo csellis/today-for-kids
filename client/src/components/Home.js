@@ -1,12 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import Weather from "./Weather";
 
-export default class Home extends Component {
-  render() {
-    return (
-      <div>
-        <Weather />
-      </div>
-    );
-  }
+export default function Home() {
+  return <Weather />;
 }

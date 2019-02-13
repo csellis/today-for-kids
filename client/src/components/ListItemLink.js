@@ -10,6 +10,7 @@ class ListItemLink extends React.Component {
   renderLink = itemProps => <Link to={this.props.to} {...itemProps} />;
 
   render() {
+    // eslint-disable-next-line no-unused-vars
     const { icon, primary, secondary, to } = this.props;
     return (
       <li>

@@ -1,52 +1,31 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import TextField from "@material-ui/core/TextField";
-import classNames from "classnames";
+import Paper from "@material-ui/core/Paper";
+import Slider from "@material-ui/lab/Slider";
+import store from "store";
 import { withStyles } from "@material-ui/core/styles";
-import { Context } from "../Provider";
 
-class Settings extends Component {
-  state = {
-    zipcode: ""
-  };
+function Settings(props) {
+  const storeTemp = store.get("temp");
+  const [temp, setTemp] = useState(storeTemp);
 
-  handleZipcode = event => {
-    this.setState({ zipcode: event.target.value });
-  };
-
-  render() {
-    const { classes } = this.props;
-    return (
-      <Context.Consumer>
-        {context => (
-          <TextField
-            id='standard-dense'
-            label='Zipcode'
-            onChange={context.setZipcode}
-            value={context.state.zipcode}
-            className={classNames(classes.textField, classes.dense)}
-            margin='dense'
-          />
-        )}
-      </Context.Consumer>
-    );
-  }
+  const { classes } = props;
+  return (
+    <Paper className={classes.container}>
+      <Slider value={temp} min={55} max={75} step={1} onChange={setTemp} />
+    </Paper>
+  );
 }
 
 const styles = theme => ({
   container: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    height: "100vh"
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200
-  },
-  dense: {
-    marginTop: 19
-  },
-  menu: {
     width: 200
   }
 });
