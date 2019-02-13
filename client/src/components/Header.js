@@ -35,7 +35,7 @@ function Header(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' color='inherit' className={classes.grow}>
-            Today
+            Weather
           </Typography>
         </Toolbar>
       </AppBar>
