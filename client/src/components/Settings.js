@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import Paper from "@material-ui/core/Paper";
 import Slider from "@material-ui/lab/Slider";
 import store from "store";
 import { withStyles } from "@material-ui/core/styles";
