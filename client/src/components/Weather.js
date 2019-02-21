@@ -105,13 +105,14 @@ function Weather(props) {
   return (
     <Card className={classes.card}>
       <CardActionArea>
-        <CardMedia
-          component='div'
-          className={classes.media}
-          image={dino}
-          style={{ backgroundColor: background }}
-          title='Cute Dinosaur, RAWR'
-        />
+        <div style={{ backgroundColor: background, padding: "20px" }}>
+          <CardMedia
+            component='div'
+            className={classes.media}
+            image={dino}
+            title='Cute Dinosaur, RAWR'
+          />
+        </div>
         <CardContent>
           <Typography gutterBottom variant='h5' component='h2'>
             High: {weather.daily.data[0].apparentTemperatureHigh} <br />
@@ -137,8 +138,8 @@ const styles = {
     minWidth: 275
   },
   media: {
-    height: 300,
-    maxWidth: 400
+    minHeight: "40vh",
+    backgroundSize: "contain"
   }
 };
 
