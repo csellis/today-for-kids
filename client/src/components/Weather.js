@@ -7,8 +7,6 @@ import isEmpty from "lodash/isEmpty";
 
 import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
@@ -104,27 +102,29 @@ function Weather(props) {
 
   return (
     <Card className={classes.card}>
-      <CardActionArea>
-        <div style={{ backgroundColor: background, padding: "20px" }}>
-          <CardMedia
-            component='div'
-            className={classes.media}
-            image={dino}
-            title='Cute Dinosaur, RAWR'
-          />
+      <div style={{ backgroundColor: background, padding: "20px" }}>
+        <div className={classes.weather}>
+          <Typography gutterBottom variant='h5' component='h2' color='secondary'>
+            {weather.currently.apparentTemperature}
+          </Typography>
         </div>
-        <CardContent>
-          <Typography gutterBottom variant='h5' component='h2'>
-            High: {weather.daily.data[0].apparentTemperatureHigh} <br />
-            Now: {weather.currently.apparentTemperature}
-          </Typography>
-          <Typography component='p'>{weather.hourly.summary}</Typography>
-          <Typography className={classes.title} color='textSecondary' gutterBottom>
-            {distanceInWords(new Date(), weather.currently.time * 1000)}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions />
+        <CardMedia
+          component='div'
+          className={classes.media}
+          image={dino}
+          title='Cute Dinosaur, RAWR'
+        />
+      </div>
+      <CardContent>
+        <Typography gutterBottom variant='h5' component='h2'>
+          High: {weather.daily.data[0].apparentTemperatureHigh} <br />
+          Now: {weather.currently.apparentTemperature}
+        </Typography>
+        <Typography component='p'>{weather.hourly.summary}</Typography>
+        <Typography className={classes.title} color='textSecondary' gutterBottom>
+          {distanceInWords(new Date(), weather.currently.time * 1000)}
+        </Typography>
+      </CardContent>
     </Card>
   );
 }
@@ -140,6 +140,10 @@ const styles = {
   media: {
     minHeight: "40vh",
     backgroundSize: "contain"
+  },
+  weather: {
+    right: 0,
+    textAlign: "right"
   }
 };
 
