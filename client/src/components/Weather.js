@@ -9,6 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
+import Collapse from "@material-ui/core/Collapse";
 import Typography from "@material-ui/core/Typography";
 import { distanceInWords } from "date-fns";
 import dino from "../assets/dino.png";
@@ -18,6 +19,7 @@ function Weather(props) {
   const [location, setLocation] = useState(null);
   const [weather, setWeather] = useState(null);
   const [background, setBackground] = useState("white");
+  const [showCard, setShowCard] = useState(false);
 
   useEffect(() => {
     function locationError(err) {
@@ -113,18 +115,21 @@ function Weather(props) {
           className={classes.media}
           image={dino}
           title='Cute Dinosaur, RAWR'
+          onClick={() => setShowCard(!showCard)}
         />
       </div>
-      <CardContent>
-        <Typography gutterBottom variant='h5' component='h2'>
-          High: {weather.daily.data[0].apparentTemperatureHigh} <br />
-          Now: {weather.currently.apparentTemperature}
-        </Typography>
-        <Typography component='p'>{weather.hourly.summary}</Typography>
-        <Typography className={classes.title} color='textSecondary' gutterBottom>
-          {distanceInWords(new Date(), weather.currently.time * 1000)}
-        </Typography>
-      </CardContent>
+      <Collapse in={showCard} timeout='auto' unmountOnExit>
+        <CardContent>
+          <Typography gutterBottom variant='h5' component='h2'>
+            High: {weather.daily.data[0].apparentTemperatureHigh} <br />
+            Now: {weather.currently.apparentTemperature}
+          </Typography>
+          <Typography component='p'>{weather.hourly.summary}</Typography>
+          <Typography className={classes.title} color='textSecondary' gutterBottom>
+            {distanceInWords(new Date(), weather.currently.time * 1000)}
+          </Typography>
+        </CardContent>
+      </Collapse>
     </Card>
   );
 }
