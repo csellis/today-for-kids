@@ -10,6 +10,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Collapse from "@material-ui/core/Collapse";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import { distanceInWords } from "date-fns";
 import dino from "../assets/dino.png";
@@ -92,22 +93,27 @@ function Weather(props) {
         setWeather(weather);
         store.set("weather", weather);
       }
-      // console.log(weather);
     } catch (err) {
       console.error(err);
     }
   };
 
   if (location === null || weather === null) {
-    return "Loading...";
+    return <CircularProgress />;
   }
+
+  // console.log(weather);
+  const weatherToday = weather.daily.data[0];
+  const apparentTemperature = Math.round(weather.currently.apparentTemperature);
+  const maxTemperature = Math.round(weatherToday.apparentTemperatureMax);
+  const summaryToday = weatherToday.summary;
 
   return (
     <Card className={classes.card}>
       <div style={{ backgroundColor: background, padding: "20px" }}>
         <div className={classes.weather}>
           <Typography gutterBottom variant='h5' component='h2' color='secondary'>
-            {weather.currently.apparentTemperature}
+            {apparentTemperature}
           </Typography>
         </div>
         <CardMedia
@@ -121,10 +127,10 @@ function Weather(props) {
       <Collapse in={showCard} timeout='auto' unmountOnExit>
         <CardContent>
           <Typography gutterBottom variant='h5' component='h2'>
-            High: {weather.daily.data[0].apparentTemperatureHigh} <br />
-            Now: {weather.currently.apparentTemperature}
+            High: {maxTemperature} <br />
+            Now: {apparentTemperature}
           </Typography>
-          <Typography component='p'>{weather.hourly.summary}</Typography>
+          <Typography component='p'>{summaryToday}</Typography>
           <Typography className={classes.title} color='textSecondary' gutterBottom>
             {distanceInWords(new Date(), weather.currently.time * 1000)}
           </Typography>
