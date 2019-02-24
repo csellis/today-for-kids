@@ -5,6 +5,8 @@ import store from "store";
 import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 
+import Location from "./Location";
+
 function Settings(props) {
   const storeTemp = store.get("temp") || 65;
   const [temp, setTemp] = useState(storeTemp);
@@ -34,6 +36,8 @@ function Settings(props) {
         />
         <h2>{temp}&deg;F</h2>
       </div>
+
+      <Location />
     </div>
   );
 }
