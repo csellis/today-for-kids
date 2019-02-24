@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import store from "store";
-import { addHours, isBefore } from "date-fns";
+import { addHours, isBefore, distanceInWords, format } from "date-fns";
 import isEmpty from "lodash/isEmpty";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -12,7 +12,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Collapse from "@material-ui/core/Collapse";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
-import { distanceInWords } from "date-fns";
 import dino from "../assets/dino.png";
 
 function Weather(props) {
@@ -102,41 +101,58 @@ function Weather(props) {
     return <CircularProgress />;
   }
 
-  // console.log(weather);
+  console.log(weather);
   const weatherToday = weather.daily.data[0];
   const apparentTemperature = Math.round(weather.currently.apparentTemperature);
   const maxTemperature = Math.round(weatherToday.apparentTemperatureMax);
   const summaryToday = weatherToday.summary;
 
   return (
-    <Card className={classes.card}>
-      <div style={{ backgroundColor: background, padding: "20px" }}>
-        <div className={classes.weather}>
-          <Typography gutterBottom variant='h5' component='h2' color='secondary'>
-            {apparentTemperature}
-          </Typography>
+    <>
+      <Card className={classes.card}>
+        <div style={{ backgroundColor: background, padding: "20px" }}>
+          <div className={classes.weather}>
+            <Typography gutterBottom variant='h5' component='h2' color='secondary'>
+              {apparentTemperature}
+            </Typography>
+          </div>
+          <CardMedia
+            component='div'
+            className={classes.media}
+            image={dino}
+            title='Cute Dinosaur, RAWR'
+            onClick={() => setShowCard(!showCard)}
+          />
         </div>
-        <CardMedia
-          component='div'
-          className={classes.media}
-          image={dino}
-          title='Cute Dinosaur, RAWR'
-          onClick={() => setShowCard(!showCard)}
-        />
-      </div>
-      <Collapse in={showCard} timeout='auto' unmountOnExit>
-        <CardContent>
-          <Typography gutterBottom variant='h5' component='h2'>
-            High: {maxTemperature} <br />
-            Now: {apparentTemperature}
-          </Typography>
-          <Typography component='p'>{summaryToday}</Typography>
-          <Typography className={classes.title} color='textSecondary' gutterBottom>
-            {distanceInWords(new Date(), weather.currently.time * 1000)}
-          </Typography>
-        </CardContent>
-      </Collapse>
-    </Card>
+        <Collapse in={showCard} timeout='auto' unmountOnExit>
+          <CardContent>
+            <Typography gutterBottom variant='h5' component='h2'>
+              High: {maxTemperature} <br />
+              Now: {apparentTemperature}
+            </Typography>
+            <Typography component='p'>{summaryToday}</Typography>
+            <Typography className={classes.title} color='textSecondary' gutterBottom>
+              {distanceInWords(new Date(), weather.currently.time * 1000)}
+            </Typography>
+          </CardContent>
+        </Collapse>
+      </Card>
+      <WeatherMap weather={weather} />
+    </>
+  );
+}
+
+function WeatherMap(props) {
+  const { currently, hourly, daily } = props.weather;
+  // console.log(daily);
+
+  if (!daily) return <div>Loading...</div>;
+  return (
+    <ul>
+      {daily.data.map(thisWeather => {
+        return <li key={thisWeather.time}>{format(thisWeather.time * 1000, "MM/DD/YY")}</li>;
+      })}
+    </ul>
   );
 }
 
