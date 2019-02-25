@@ -6,16 +6,21 @@ import Button from "@material-ui/core/Button";
 import "./location.css";
 
 class Location extends React.Component {
-  constructor() {
-    super();
-
+  componentWillMount() {
     const locationStore = store.get("location");
-
-    this.state = {
-      lat: locationStore.latitude || 51.505,
-      lng: locationStore.longitude || -0.09,
+    let lat, lng;
+    if (locationStore) {
+      lat = locationStore.latitude;
+      lng = locationStore.longitude;
+    } else {
+      lat = 51.505;
+      lng = -0.09;
+    }
+    this.setState({
+      lat,
+      lng,
       zoom: 13
-    };
+    });
   }
 
   updatePosition() {
