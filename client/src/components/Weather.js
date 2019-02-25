@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Redirect } from "react-router";
 import PropTypes from "prop-types";
 import axios from "axios";
 import store from "store";
-import { addHours, isBefore, distanceInWords, format } from "date-fns";
+import { addHours, isBefore, distanceInWords } from "date-fns";
 import isEmpty from "lodash/isEmpty";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -20,32 +21,25 @@ function Weather(props) {
   const [weather, setWeather] = useState(null);
   const [background, setBackground] = useState("white");
   const [showCard, setShowCard] = useState(false);
+  const [redirect, setRedirect] = useState(false);
+
+  const locationStore = store.get("location");
+  const weatherStore = store.get("weather");
 
   useEffect(() => {
-    function locationError(err) {
-      console.warn(err);
-    }
-    if (!!navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const { latitude, longitude } = position.coords;
-          setLocation({
-            latitude,
-            longitude
-          });
-        },
-        locationError,
-        { timeout: 10000 }
-      );
+    if (locationStore) {
+      const { latitude, longitude } = locationStore;
+      setLocation({
+        latitude,
+        longitude
+      });
     } else {
-      console.warn("Geolocation is required for this application. Sorry.");
+      setRedirect(true);
     }
   }, []);
 
   useEffect(() => {
     if (location) {
-      let weatherStore = store.get("weather");
-
       if (!weatherStore || isEmpty(weatherStore)) {
         console.log("No weather store");
         fetchWeather(location);
@@ -97,11 +91,15 @@ function Weather(props) {
     }
   };
 
+  if (redirect) {
+    return <Redirect to='/settings' />;
+  }
+
   if (location === null || weather === null) {
     return <CircularProgress />;
   }
 
-  console.log(weather);
+  // console.log(weather);
   const weatherToday = weather.daily.data[0];
   const apparentTemperature = Math.round(weather.currently.apparentTemperature);
   const maxTemperature = Math.round(weatherToday.apparentTemperatureMax);
@@ -137,22 +135,7 @@ function Weather(props) {
           </CardContent>
         </Collapse>
       </Card>
-      <WeatherMap weather={weather} />
     </>
-  );
-}
-
-function WeatherMap(props) {
-  const { currently, hourly, daily } = props.weather;
-  // console.log(daily);
-
-  if (!daily) return <div>Loading...</div>;
-  return (
-    <ul>
-      {daily.data.map(thisWeather => {
-        return <li key={thisWeather.time}>{format(thisWeather.time * 1000, "MM/DD/YY")}</li>;
-      })}
-    </ul>
   );
 }
 

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import store from "store";
 import { Map as LeafletMap, TileLayer, Marker, Popup } from "react-leaflet";
+import Button from "@material-ui/core/Button";
 
 import "./location.css";
 
@@ -17,53 +18,53 @@ class Location extends React.Component {
     };
   }
 
+  updatePosition() {
+    if (!!navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          const loc = {
+            latitude,
+            longitude
+          };
+          this.setState({
+            lat: latitude,
+            lng: longitude
+          });
+          store.set("location", loc);
+        },
+        error => console.warn(error),
+        { timeout: 10000 }
+      );
+    } else {
+      console.warn("Geolocation is required for this application. Sorry.");
+    }
+  }
+
   render() {
     const position = [this.state.lat, this.state.lng];
     return (
-      <LeafletMap className='map' center={position} zoom={this.state.zoom}>
-        <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-        />
-        <Marker position={position}>
-          <Popup>Your Location</Popup>
-        </Marker>
-      </LeafletMap>
+      <>
+        <LeafletMap className='map' center={position} zoom={this.state.zoom}>
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+          />
+          <Marker position={position}>
+            <Popup>Your Location</Popup>
+          </Marker>
+        </LeafletMap>
+        <Button
+          style={{ margin: "1em" }}
+          variant='outlined'
+          color='primary'
+          onClick={() => this.updatePosition()}
+        >
+          Update location
+        </Button>
+      </>
     );
   }
 }
-
-// function Location() {
-//   const [location, setLocation] = useState(null);
-
-//   useEffect(() => {
-//     function locationError(err) {
-//       console.warn(err);
-//     }
-//     if (!!navigator.geolocation) {
-//       navigator.geolocation.getCurrentPosition(
-//         position => {
-//           const { latitude, longitude } = position.coords;
-//           const loc = {
-//             latitude,
-//             longitude
-//           };
-//           setLocation(loc);
-//           store.set("location", loc);
-//         },
-//         locationError,
-//         { timeout: 10000 }
-//       );
-//     } else {
-//       console.warn("Geolocation is required for this application. Sorry.");
-//     }
-//   }, []);
-//   if (!location) return <div>Loading...</div>;
-
-//   const position = [location.latitude, location.longitude];
-//   console.log(position);
-
-//   return <Map className='map' center={position} zoom={13} />;
-// }
 
 export default Location;
