@@ -6,7 +6,8 @@
   "author": "Chris Ellis <ellis.cs@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "concurrently": "^4.1.0"
+    "concurrently": "^4.1.0",
+    "react-scripts": "^2.1.5"
   },
   "scripts": {
     "start": "concurrently \"cd server && node index.js\" \"cd client && yarn start\"",
