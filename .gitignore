@@ -27,6 +27,5 @@ yarn-error.log*
 
 server/config/dev.js
 client/config/dev.js
-client/netlify.toml
 client/.env
 client/.env.production
