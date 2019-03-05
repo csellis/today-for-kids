@@ -14,6 +14,7 @@ import Collapse from "@material-ui/core/Collapse";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import dino from "../assets/dino.png";
+import { Button } from "@material-ui/core";
 
 function Weather(props) {
   const { classes } = props;
@@ -78,18 +79,41 @@ function Weather(props) {
 
   const fetchWeather = async location => {
     const { latitude, longitude } = location;
-    try {
-      let res = await axios.get(`/api/getWeather/${latitude}/${longitude}`);
 
+    try {
+      let res = await axios.get(`/.netlify/functions/weather/`, {
+        params: {
+          latitude,
+          longitude
+        }
+      });
       if (res) {
-        const weather = res.data;
-        setWeather(weather);
-        store.set("weather", weather);
+        console.log(res);
+        // const weather = res.data;
+        // setWeather(weather);
+        // store.set("weather", weather);
       }
     } catch (err) {
       console.error(err);
     }
+
+    // await (await fetch('/.netlify/functions/weather'))
   };
+
+  // const fetchWeather = async location => {
+  //   const { latitude, longitude } = location;
+  //   try {
+  //     let res = await axios.get(`/api/getWeather/${latitude}/${longitude}`);
+
+  //     if (res) {
+  //       const weather = res.data;
+  //       setWeather(weather);
+  //       store.set("weather", weather);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   if (redirect) {
     return <Redirect to='/settings' />;
@@ -122,6 +146,7 @@ function Weather(props) {
             onClick={() => setShowCard(!showCard)}
           />
         </div>
+        <Button onClick={() => fetchWeather(location)}>Fetch weather</Button>
         <Collapse in={showCard} timeout='auto' unmountOnExit>
           <CardContent>
             <Typography gutterBottom variant='h5' component='h2'>

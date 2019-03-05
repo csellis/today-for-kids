@@ -6,14 +6,16 @@
   "author": "Chris Ellis <ellis.cs@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "concurrently": "^4.1.0",
-    "react-scripts": "^2.1.5"
+    "concurrently": "^4.1.0"
   },
   "scripts": {
+    "lambda-serve": "netlify-lambda serve client/api",
+    "lambda-build": "netlify-lambda build client/api",
     "start": "concurrently \"cd server && node index.js\" \"cd client && yarn start\"",
     "dev": "concurrently \"cd server && nodemon index.js\" \"cd client && yarn start\"",
     "install": "cd client && yarn install",
     "build": "cd client && react-scripts build",
     "heroku-postbuild": "concurrently \"cd client && yarn install\" \"cd server && yarn install\""
-  }
+  },
+  "devDependencies": {}
 }
