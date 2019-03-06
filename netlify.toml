@@ -1,4 +1,5 @@
 [build]
+  base = "/"
   command = "yarn build"
   functions = "lambda" #  netlify-lambda reads this
   publish = "build"
