@@ -81,7 +81,7 @@ function Weather(props) {
     const { latitude, longitude } = location;
 
     try {
-      let res = await axios.get(`/.netlify/functions/weather/`, {
+      let res = await axios.get(`/.netlify/functions/weather`, {
         params: {
           latitude,
           longitude
