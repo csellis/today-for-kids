@@ -16,11 +16,13 @@ exports.handler = function(event, context, callback) {
   const getWeather = () => {
     axios
       .get(API_URL)
-      .then(res => send(res.data))
+      .then(res => {
+        send(res.data);
+      })
       .catch(err => send(err));
   };
 
-  if (event.httpMethod === "get") {
+  if (event.httpMethod === "GET") {
     getWeather();
   }
 };

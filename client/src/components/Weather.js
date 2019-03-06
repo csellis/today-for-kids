@@ -88,32 +88,15 @@ function Weather(props) {
         }
       });
       if (res) {
-        console.log(res);
-        // const weather = res.data;
-        // setWeather(weather);
-        // store.set("weather", weather);
+        // console.log(res);
+        const weather = res.data;
+        setWeather(weather);
+        store.set("weather", weather);
       }
     } catch (err) {
       console.error(err);
     }
-
-    // await (await fetch('/.netlify/functions/weather'))
   };
-
-  // const fetchWeather = async location => {
-  //   const { latitude, longitude } = location;
-  //   try {
-  //     let res = await axios.get(`/api/getWeather/${latitude}/${longitude}`);
-
-  //     if (res) {
-  //       const weather = res.data;
-  //       setWeather(weather);
-  //       store.set("weather", weather);
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   if (redirect) {
     return <Redirect to='/settings' />;
