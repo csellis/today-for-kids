@@ -5,6 +5,7 @@ exports.handler = function(event, context, callback) {
   const DARKSKY_API_KEY = process.env.REACT_APP_DARKSKY;
   const API_URL = `https://api.darksky.net/forecast/${DARKSKY_API_KEY}/${latitude},${longitude}?exclude=minutely,flags`;
 
+  // console.log("handler hit");
   //send response
   const send = body => {
     callback(null, {
@@ -22,7 +23,11 @@ exports.handler = function(event, context, callback) {
       .catch(err => send(err));
   };
 
-  if (event.httpMethod === "GET") {
-    getWeather();
+  try {
+    if (event.httpMethod === "GET") {
+      getWeather();
+    }
+  } catch (err) {
+    callback(err);
   }
 };
