@@ -23,10 +23,12 @@ exports.handler = function(event, context, callback) {
       .catch(err => send(err));
   };
 
+  if (event.httpMethod !== "GET") {
+    return callback(null, { statusCode: 410, body: "Unsupported Request Method" });
+  }
+
   try {
-    if (event.httpMethod === "GET") {
-      getWeather();
-    }
+    getWeather();
   } catch (err) {
     callback(err);
   }
