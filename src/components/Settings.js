@@ -8,8 +8,13 @@ import { Typography } from "@material-ui/core";
 import Location from "./Location";
 
 function Settings(props) {
-  const storeTemp = store.get("temp") || 65;
+  const storeTemp = store.get("temp");
   const [temp, setTemp] = useState(storeTemp);
+
+  if (!storeTemp) {
+    setTemp(65);
+    store.set("temp", 65);
+  }
 
   const { classes } = props;
   let handleChange = (event, value) => {
