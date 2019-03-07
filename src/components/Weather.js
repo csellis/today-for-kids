@@ -13,7 +13,6 @@ import Collapse from "@material-ui/core/Collapse";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import dino from "../assets/dino.png";
-import { Button } from "@material-ui/core";
 
 import { useLocationStoreOrRedirect } from "../hooks/useLocationStoreOrRedirect";
 import { useBackground } from "../hooks/useBackground";
