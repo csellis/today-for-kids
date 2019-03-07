@@ -97,7 +97,6 @@ function Weather(props) {
             onClick={() => setShowCard(!showCard)}
           />
         </div>
-        <Button onClick={() => fetchWeather(location)}>Fetch weather</Button>
         <Collapse in={showCard} timeout='auto' unmountOnExit>
           <CardContent>
             <Typography gutterBottom variant='h5' component='h2'>
