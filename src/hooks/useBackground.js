@@ -11,7 +11,7 @@ function useBackground(weather) {
       const warmTemp = store.get("temp");
       if (dailyHigh < warmTemp) {
         console.log(`Brrr it's cold`);
-        setBackground("aliceblue");
+        setBackground("paleturquoise");
       } else if (dailyHigh > warmTemp && currentTemp < warmTemp) {
         console.log(`It'll warm up later`);
         setBackground("white");
