@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router";
 import PropTypes from "prop-types";
-import axios from "axios";
 import store from "store";
 import { addHours, isBefore, distanceInWords } from "date-fns";
 import isEmpty from "lodash/isEmpty";
@@ -16,27 +15,21 @@ import Typography from "@material-ui/core/Typography";
 import dino from "../assets/dino.png";
 import { Button } from "@material-ui/core";
 
+import { useLocationStoreOrRedirect } from "../hooks/useLocationStoreOrRedirect";
+import { useBackground } from "../hooks/useBackground";
+
 function Weather(props) {
   const { classes } = props;
   const [location, setLocation] = useState(null);
   const [weather, setWeather] = useState(null);
-  const [background, setBackground] = useState("white");
   const [showCard, setShowCard] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [background] = useBackground(weather);
 
-  const locationStore = store.get("location");
   const weatherStore = store.get("weather");
 
   useEffect(() => {
-    if (locationStore) {
-      const { latitude, longitude } = locationStore;
-      setLocation({
-        latitude,
-        longitude
-      });
-    } else {
-      setRedirect(true);
-    }
+    useLocationStoreOrRedirect(setLocation, setRedirect);
   }, []);
 
   useEffect(() => {
@@ -58,41 +51,16 @@ function Weather(props) {
     }
   }, [location]);
 
-  useEffect(() => {
-    if (weather) {
-      const currentTemp = weather.currently.apparentTemperature;
-      const dailyHigh = weather.daily.data[0].apparentTemperatureHigh;
-      const warmTemp = store.get("temp");
-
-      if (dailyHigh < warmTemp) {
-        console.log(`Brrr it's cold`);
-        setBackground("aliceblue");
-      } else if (dailyHigh > warmTemp && currentTemp < warmTemp) {
-        console.log(`It'll warm up later`);
-        setBackground("white");
-      } else {
-        console.log(`It's a little warm.`);
-        setBackground("lightcoral");
-      }
-    }
-  });
-
   const fetchWeather = async location => {
     const { latitude, longitude } = location;
 
     try {
-      let res = await axios.get(`/.netlify/functions/weather`, {
-        params: {
-          latitude,
-          longitude
-        }
-      });
-      if (res) {
-        // console.log(res);
-        const weather = res.data;
-        setWeather(weather);
-        store.set("weather", weather);
-      }
+      const res = await fetch(
+        `/.netlify/functions/weather?latitude=${latitude}&longitude=${longitude}`
+      );
+      const data = await res.json();
+      setWeather(data);
+      store.set("weather", data);
     } catch (err) {
       console.error(err);
     }
