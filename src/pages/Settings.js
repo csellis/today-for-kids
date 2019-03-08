@@ -1,34 +1,35 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import Slider from "@material-ui/lab/Slider";
-import store from "store";
-import { withStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import Slider from '@material-ui/lab/Slider';
+import store from 'store';
+import { withStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
 
-import Location from "./Location";
+import Location from '../components/Location';
 
 function Settings(props) {
-  const storeTemp = store.get("temp");
+  const storeTemp = store.get('temp');
   const [temp, setTemp] = useState(storeTemp);
 
   if (!storeTemp) {
     setTemp(65);
-    store.set("temp", 65);
+    store.set('temp', 65);
   }
 
   const { classes } = props;
-  let handleChange = (event, value) => {
+  const handleChange = (event, value) => {
     event.preventDefault(true);
     setTemp(value);
-    store.set("temp", value);
+    store.set('temp', value);
   };
   return (
     <div className={classes.container}>
-      <Typography variant='h5' gutterBottom>
+      <Typography variant="h5" gutterBottom>
         Select Temperature
       </Typography>
-      <Typography variant='subtitle1' gutterBottom>
-        Select the temperature at which your child will start wearing clothes for warm weather.
+      <Typography variant="subtitle1" gutterBottom>
+        Select the temperature at which your child will start wearing clothes
+        for warm weather.
       </Typography>
       <div className={classes.sliderContainer}>
         <Slider
@@ -49,29 +50,29 @@ function Settings(props) {
 
 const styles = theme => ({
   container: {
-    display: "flex",
-    flexWrap: "wrap",
-    height: "100vh",
-    flexDirection: "column",
+    display: 'flex',
+    flexWrap: 'wrap',
+    height: '100vh',
+    flexDirection: 'column',
     margin: `${theme.spacing.unit * 2}px auto`,
-    alignItems: "center"
+    alignItems: 'center',
   },
   sliderContainer: {
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing.unit * 2,
   },
   slider: {
-    width: "300px",
-    touchAction: "none"
+    width: '300px',
+    touchAction: 'none'
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200
-  }
+    width: 200,
+  },
 });
 
 Settings.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Settings);
