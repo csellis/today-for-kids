@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 
 import { withStyles } from '@material-ui/core/styles';
+import ScheduleDates from '../components/ScheduleDates';
 
 function Schedule(props) {
   const { classes } = props;
@@ -12,6 +13,7 @@ function Schedule(props) {
       <Typography variant="h5" gutterBottom>
         Schedule
       </Typography>
+      <ScheduleDates />
     </div>
   );
 }

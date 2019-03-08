@@ -3,19 +3,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import getDay from 'date-fns/get_day';
+import format from 'date-fns/format';
 
-const today = getDay(new Date());
-const days = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
-];
-const dayName = days[today - 1];
+const today = format(new Date(), 'dddd');
 
 const schedule = [
   {
@@ -40,17 +30,17 @@ const schedule = [
   },
 ];
 
-const filtered = schedule.filter(item => item.day === dayName);
+const filtered = schedule.filter(item => item.day === today);
 const trimAllSpace = string => string.replace(/\s/g, '');
 
 function Today() {
   return (
     <>
-      <h2>{dayName}</h2>
+      <h2>{today}</h2>
       <List>
         {filtered.map(event => (
           <ListItem
-            key={`${dayName}-${trimAllSpace(event.title)}-${trimAllSpace(
+            key={`${today}-${trimAllSpace(event.title)}-${trimAllSpace(
               event.start
             )}`}
           >
