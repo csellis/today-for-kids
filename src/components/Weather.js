@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router";
-import PropTypes from "prop-types";
-import store from "store";
-import { addHours, isBefore, distanceInWords } from "date-fns";
-import isEmpty from "lodash/isEmpty";
+import React, { useEffect, useState } from 'react';
+import { Redirect } from 'react-router';
+import PropTypes from 'prop-types';
+import store from 'store';
+import { addHours, isBefore, formatDistance } from 'date-fns';
+import isEmpty from 'lodash/isEmpty';
 
-import { withStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Collapse from "@material-ui/core/Collapse";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import dino from "../assets/dino.png";
+import { withStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Collapse from '@material-ui/core/Collapse';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
+import dino from '../assets/dino.png';
 
-import { useLocationStoreOrRedirect } from "../hooks/useLocationStoreOrRedirect";
-import { useBackground } from "../hooks/useBackground";
+import { useLocationStoreOrRedirect } from '../hooks/useLocationStoreOrRedirect';
+import { useBackground } from '../hooks/useBackground';
 
 function Weather(props) {
   const { classes } = props;
@@ -25,7 +25,7 @@ function Weather(props) {
   const [redirect, setRedirect] = useState(false);
   const [background] = useBackground(weather);
 
-  const weatherStore = store.get("weather");
+  const weatherStore = store.get('weather');
 
   useEffect(() => {
     useLocationStoreOrRedirect(setLocation, setRedirect);
@@ -34,13 +34,16 @@ function Weather(props) {
   useEffect(() => {
     if (location) {
       if (!weatherStore || isEmpty(weatherStore)) {
-        console.log("No weather store");
+        console.log('No weather store');
         fetchWeather(location);
       } else {
-        console.log("There is a weather store");
+        console.log('There is a weather store');
         setWeather(weatherStore);
         const now = new Date();
-        const fetchedTimePlusOneHour = addHours(weatherStore.currently.time * 1000, 1);
+        const fetchedTimePlusOneHour = addHours(
+          weatherStore.currently.time * 1000,
+          1
+        );
 
         if (!isBefore(now, fetchedTimePlusOneHour)) {
           console.log(`but, it's been an hour.`);
@@ -59,14 +62,14 @@ function Weather(props) {
       );
       const data = await res.json();
       setWeather(data);
-      store.set("weather", data);
+      store.set('weather', data);
     } catch (err) {
       console.error(err);
     }
   };
 
   if (redirect) {
-    return <Redirect to='/settings' />;
+    return <Redirect to="/settings" />;
   }
 
   if (location === null || weather === null) {
@@ -82,29 +85,38 @@ function Weather(props) {
   return (
     <>
       <Card className={classes.card}>
-        <div style={{ backgroundColor: background, padding: "20px" }}>
+        <div style={{ backgroundColor: background, padding: '20px' }}>
           <div className={classes.weather}>
-            <Typography gutterBottom variant='h5' component='h2' color='secondary'>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="h2"
+              color="secondary"
+            >
               {apparentTemperature}
             </Typography>
           </div>
           <CardMedia
-            component='div'
+            component="div"
             className={classes.media}
             image={dino}
-            title='Cute Dinosaur, RAWR'
+            title="Cute Dinosaur, RAWR"
             onClick={() => setShowCard(!showCard)}
           />
         </div>
-        <Collapse in={showCard} timeout='auto' unmountOnExit>
+        <Collapse in={showCard} timeout="auto" unmountOnExit>
           <CardContent>
-            <Typography gutterBottom variant='h5' component='h2'>
+            <Typography gutterBottom variant="h5" component="h2">
               High: {maxTemperature} <br />
               Now: {apparentTemperature}
             </Typography>
-            <Typography component='p'>{summaryToday}</Typography>
-            <Typography className={classes.title} color='textSecondary' gutterBottom>
-              {distanceInWords(new Date(), weather.currently.time * 1000)}
+            <Typography component="p">{summaryToday}</Typography>
+            <Typography
+              className={classes.title}
+              color="textSecondary"
+              gutterBottom
+            >
+              {formatDistance(new Date(), weather.currently.time * 1000)}
             </Typography>
           </CardContent>
         </Collapse>
@@ -114,21 +126,21 @@ function Weather(props) {
 }
 
 Weather.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 const styles = {
   card: {
-    minWidth: 275
+    minWidth: 275,
   },
   media: {
-    minHeight: "40vh",
-    backgroundSize: "contain"
+    minHeight: '40vh',
+    backgroundSize: 'contain',
   },
   weather: {
     right: 0,
-    textAlign: "right"
-  }
+    textAlign: 'right',
+  },
 };
 
 export default withStyles(styles)(Weather);

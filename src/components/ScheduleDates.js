@@ -33,6 +33,7 @@ function ScheduleDates() {
   const initialWeekday = {
     weekday: 'Monday',
     open: false,
+    action: 'insert',
   };
 
   const [selectedItem, setSelectedItem] = useState(initialWeekday);
@@ -41,27 +42,25 @@ function ScheduleDates() {
     setSelectedItem({
       weekday,
       open: true,
+      action: 'insert',
     });
   };
 
   return (
     <>
       <List component="nav" className={classes.root}>
-        {daysOfWeek.map(weekday => {
-          const chicken = 'bawr';
-          return (
-            <ListItem
-              onClick={() => handleWeekdayClick(weekday)}
-              button
-              key={weekday}
-            >
-              <ListItemIcon aria-label="Add Item">
-                <SendIcon />
-              </ListItemIcon>
-              <ListItemText inset primary={weekday} />
-            </ListItem>
-          );
-        })}
+        {daysOfWeek.map(weekday => (
+          <ListItem
+            onClick={() => handleWeekdayClick(weekday)}
+            button
+            key={weekday}
+          >
+            <ListItemIcon aria-label="Add Item">
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText inset primary={weekday} />
+          </ListItem>
+        ))}
       </List>
       <ScheduleDialog selectedItem={selectedItem} />
     </>

@@ -5,7 +5,9 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import format from 'date-fns/format';
 
-const today = format(new Date(), 'dddd');
+const now = new Date();
+console.log(now);
+const today = format(now, 'EEEE');
 
 const schedule = [
   {

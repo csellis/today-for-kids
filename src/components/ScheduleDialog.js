@@ -3,17 +3,26 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import FormControl from '@material-ui/core/FormControl';
+import {
+  InputLabel,
+  Select,
+  MenuItem,
+  Input,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+} from '@material-ui/core';
+import { TimePicker } from 'material-ui-pickers';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import { isNull } from 'util';
 
 const useStyles = makeStyles({
   appBar: {
@@ -24,6 +33,16 @@ const useStyles = makeStyles({
   },
 });
 
+const daysOfWeek = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
+
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
@@ -33,9 +52,13 @@ function FullScreenDialog(props) {
   console.log(selectedItem);
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [formWeekday, setFormWeekday] = useState(selectedItem.weekday);
+  const [formTime, setFormTime] = useState();
 
+  // Initial props when modal opening
+  //  -- have to reset select in case of escape from form
   useEffect(() => {
-    console.log(`Effect run`);
+    setFormWeekday(selectedItem.weekday);
     if (selectedItem.open) {
       setOpen(true);
     }
@@ -49,11 +72,16 @@ function FullScreenDialog(props) {
     setOpen(false);
   }
 
+  const handleSelectChange = event => {
+    setFormWeekday(event.target.value);
+  };
+
+  const handleTimeChange = event => {
+    console.log('time changed');
+  };
+
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open full-screen dialog
-      </Button>
       <Dialog
         fullScreen
         open={open}
@@ -70,32 +98,63 @@ function FullScreenDialog(props) {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" className={classes.flex}>
-              {selectedItem.weekday}
+              {formWeekday}
             </Typography>
-            <Button color="inherit" onClick={handleClose}>
-              save
-            </Button>
           </Toolbar>
         </AppBar>
-        <List>
-          <ListItem button>
-            <ListItemText primary="Phone ringtone" secondary="Titania" />
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemText
-              primary="Default notification ringtone"
-              secondary="Tethys"
-            />
-          </ListItem>
-        </List>
+        <DialogContent>
+          <form className={classes.container}>
+            <List className={classes.root}>
+              <ListItem>
+                <InputLabel htmlFor="weekday">Weekday</InputLabel>
+                <ListItemSecondaryAction>
+                  <FormControl className={classes.formControl}>
+                    <Select
+                      native
+                      value={formWeekday}
+                      onChange={handleSelectChange}
+                      input={<Input id="weekday" />}
+                    >
+                      {daysOfWeek.map(weekday => (
+                        <option key={weekday} value={weekday}>
+                          {weekday}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <ListItem>
+                <InputLabel htmlFor="time">Time</InputLabel>
+                <ListItemSecondaryAction>
+                  <div className="picker">
+                    <TimePicker
+                      autoOk
+                      label="12 hours"
+                      value={formTime}
+                      onChange={handleTimeChange}
+                    />
+                  </div>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </List>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Save
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   );
 }
 
 FullScreenDialog.propTypes = {
-  selectedItem: PropTypes.object,
+  selectedItem: PropTypes.object.isRequired,
 };
 
 export default FullScreenDialog;

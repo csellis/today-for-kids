@@ -1,20 +1,24 @@
-import React, { Component } from "react";
-import "./App.css";
-import Theme from "./Theme";
-import Routes from "./Routes";
-import Header from "./components/Header";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import React, { Component } from 'react';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import './App.css';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Theme from './Theme';
+import Routes from './Routes';
+import Header from './components/Header';
 
 class App extends Component {
   render() {
     return (
-      <Theme>
-        <CssBaseline />
-        <div className='App'>
-          <Header />
-          <Routes />
-        </div>
-      </Theme>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <Theme>
+          <CssBaseline />
+          <div className="App">
+            <Header />
+            <Routes />
+          </div>
+        </Theme>
+      </MuiPickersUtilsProvider>
     );
   }
 }
