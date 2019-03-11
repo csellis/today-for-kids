@@ -9,7 +9,7 @@ import store from 'store';
 const now = new Date();
 const today = format(now, 'EEEE');
 
-const schedule = store.get('events');
+const schedule = store.get('events') || [];
 const filtered = schedule.filter(event => event.weekday === today);
 
 function Today() {
