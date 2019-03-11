@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,12 +8,11 @@ import FormControl from '@material-ui/core/FormControl';
 import {
   InputLabel,
   Select,
-  MenuItem,
   Input,
   List,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
+  TextField,
 } from '@material-ui/core';
 import { TimePicker } from 'material-ui-pickers';
 import AppBar from '@material-ui/core/AppBar';
@@ -23,6 +21,14 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+import { getHours, getMinutes, format } from 'date-fns';
+import store from 'store';
+import PropTypes from 'prop-types';
+import remove from 'lodash/remove';
+
+const operations = require('store/plugins/operations');
+
+store.addPlugin(operations);
 
 const useStyles = makeStyles({
   appBar: {
@@ -30,6 +36,9 @@ const useStyles = makeStyles({
   },
   flex: {
     flex: 1,
+  },
+  picker: {
+    width: '125px',
   },
 });
 
@@ -49,27 +58,52 @@ function Transition(props) {
 
 function FullScreenDialog(props) {
   const { selectedItem } = props;
-  console.log(selectedItem);
   const classes = useStyles();
+
+  const timeStart = new Date();
+  timeStart.setHours(8);
+  timeStart.setMinutes(0);
+
   const [open, setOpen] = useState(false);
+  const [formTitle, setFormTitle] = useState('');
   const [formWeekday, setFormWeekday] = useState(selectedItem.weekday);
-  const [formTime, setFormTime] = useState();
+  const [formTime, setFormTime] = useState(timeStart);
+  const [eventId, setEventId] = useState();
+
+  const resetSelectedItem = () => {
+    timeStart.setHours(8);
+    timeStart.setMinutes(0);
+
+    setFormTitle('');
+    setFormTime(timeStart);
+    setEventId();
+  };
 
   // Initial props when modal opening
   //  -- have to reset select in case of escape from form
   useEffect(() => {
+    // console.log(selectedItem);
     setFormWeekday(selectedItem.weekday);
+    setFormTitle(selectedItem.title);
+    if (selectedItem.action === 'edit') {
+      const { title, hours, minutes, id } = selectedItem.event;
+      timeStart.setHours(hours);
+      timeStart.setMinutes(minutes);
+
+      setFormTitle(title);
+      setFormTime(timeStart);
+      setEventId(id);
+    } else {
+      resetSelectedItem();
+    }
     if (selectedItem.open) {
       setOpen(true);
     }
   }, [selectedItem]);
 
-  function handleClickOpen() {
-    setOpen(true);
-  }
-
   function handleClose() {
     setOpen(false);
+    resetSelectedItem();
   }
 
   const handleSelectChange = event => {
@@ -77,7 +111,44 @@ function FullScreenDialog(props) {
   };
 
   const handleTimeChange = event => {
-    console.log('time changed');
+    setFormTime(event);
+  };
+
+  const handleTitleChange = event => {
+    setFormTitle(event.target.value);
+  };
+
+  const handleDelete = () => {
+    const allEvents = store.get('events');
+    remove(allEvents, event => event.id === eventId);
+    store.set('events', allEvents);
+    handleClose();
+  };
+
+  const handleFormSave = () => {
+    if (selectedItem.action === 'insert') {
+      const event = {
+        id: format(new Date(), 'T'),
+        title: formTitle.trim(),
+        weekday: formWeekday,
+        hours: getHours(formTime),
+        minutes: getMinutes(formTime),
+      };
+      store.push('events', event);
+    } else {
+      // Fetch and remove this event
+      const allEvents = store.get('events');
+      const updated = remove(allEvents, event => event.id === eventId)[0];
+      store.set('events', allEvents);
+      // Update event
+      updated.title = formTitle.trim();
+      updated.weekday = formWeekday;
+      updated.hours = getHours(formTime);
+      updated.minutes = getMinutes(formTime);
+      // Push updated event
+      store.push('events', updated);
+    }
+    handleClose();
   };
 
   return (
@@ -106,6 +177,18 @@ function FullScreenDialog(props) {
           <form className={classes.container}>
             <List className={classes.root}>
               <ListItem>
+                <TextField
+                  className={classes.textField}
+                  defaultValue={formTitle}
+                  placeholder="Enter title"
+                  margin="normal"
+                  variant="outlined"
+                  fullWidth
+                  autoFocus
+                  onChange={handleTitleChange}
+                />
+              </ListItem>
+              <ListItem>
                 <InputLabel htmlFor="weekday">Weekday</InputLabel>
                 <ListItemSecondaryAction>
                   <FormControl className={classes.formControl}>
@@ -127,10 +210,10 @@ function FullScreenDialog(props) {
               <ListItem>
                 <InputLabel htmlFor="time">Time</InputLabel>
                 <ListItemSecondaryAction>
-                  <div className="picker">
+                  <div className={classes.picker}>
                     <TimePicker
                       autoOk
-                      label="12 hours"
+                      format="p"
                       value={formTime}
                       onChange={handleTimeChange}
                     />
@@ -139,12 +222,20 @@ function FullScreenDialog(props) {
               </ListItem>
             </List>
           </form>
+          <ul>
+            <li>{formTitle}</li>
+            <li>{formWeekday}</li>
+            <li>Form time: {format(formTime, 'Pp')}</li>
+          </ul>
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleDelete} color="secondary">
+            Delete
+          </Button>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleFormSave} color="primary">
             Save
           </Button>
         </DialogActions>
