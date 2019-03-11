@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -9,7 +9,7 @@ import store from 'store';
 const now = new Date();
 const today = format(now, 'EEEE');
 
-const schedule = store.get('events');
+const schedule = store.get('events') || [];
 const filtered = schedule.filter(event => event.weekday === today);
 
 function Today() {

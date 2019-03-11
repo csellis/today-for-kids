@@ -19,6 +19,9 @@ function WeekdayListItem(props) {
   const [weekdayStore, setWeekdayStore] = useState([]);
 
   const handleWeekdayStore = returnedStore => {
+    if (!returnedStore) {
+      return setWeekdayStore([]);
+    }
     const filteredStore = returnedStore.filter(
       event => event.weekday === weekday
     );
