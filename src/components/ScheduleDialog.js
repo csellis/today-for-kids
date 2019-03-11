@@ -222,11 +222,6 @@ function FullScreenDialog(props) {
               </ListItem>
             </List>
           </form>
-          <ul>
-            <li>{formTitle}</li>
-            <li>{formWeekday}</li>
-            <li>Form time: {format(formTime, 'Pp')}</li>
-          </ul>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDelete} color="secondary">
