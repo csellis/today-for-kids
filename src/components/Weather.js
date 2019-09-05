@@ -12,9 +12,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Collapse from '@material-ui/core/Collapse';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+
 import dino from '../assets/dino.png';
 
-import { useLocationStoreOrRedirect } from '../hooks/useLocationStoreOrRedirect';
 import { useBackground } from '../hooks/useBackground';
 
 function Weather(props) {
@@ -28,7 +28,14 @@ function Weather(props) {
   const weatherStore = store.get('weather');
 
   useEffect(() => {
-    useLocationStoreOrRedirect(setLocation, setRedirect);
+    const locationStore = store.get("location");
+    if (locationStore) {
+      const { latitude, longitude } = locationStore;
+      setLocation({ latitude, longitude });
+    } else {
+      setLocation(null);
+      setRedirect(true);
+    }
   }, []);
 
   useEffect(() => {
