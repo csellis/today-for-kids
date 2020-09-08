@@ -1,6 +1,12 @@
-# Today for Kids
+<h1 align="center">
+  ☂️ Weathosaurus
+</h1>
 
-An application to help kids learn about time and weather
+[![bg][banner]][weathosaurus]
+
+## [Today for Kids][weathosaurus]
+
+An application to help kids learn about time and the weather.
 
 ### Problem
 
@@ -15,3 +21,6 @@ I've decided to the build a React application using MaterialUI. The persistence 
 ### Result
 
 I'm still resulting. Check back soon.
+
+[weathosaurus]:https://weathosaurus.netlify.app/settings
+[banner]: https://github.com/csellis/today-for-kids/blob/master/screenshot.png
