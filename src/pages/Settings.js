@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Slider from '@material-ui/lab/Slider';
 import store from 'store';
 import { withStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
+import { Typography, Slider } from '@material-ui/core';
 
 import Location from '../components/Location';
 
